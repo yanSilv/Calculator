@@ -1,6 +1,7 @@
 class CalcController {
 
-    constructor () {
+    constructor() {
+        this._operation = [];
         this._locale = "pt-Br";
         this._displayCalcEl = document.querySelector("#display");
         this._dateEl = document.querySelector("#data");
@@ -10,24 +11,54 @@ class CalcController {
         this.initButtonsEvents();
     }
 
-    initialize(){
+    initialize() {
         this.setDisplayDateTime();
-        setInterval(()=>{
-            this.setDisplayDateTime();    
+        setInterval(() => {
+            this.setDisplayDateTime();
         }, 1000);
     }
 
     initButtonsEvents() {
+        let operator = "";
         let buttons = document.querySelectorAll("#buttons > g, #parts > g");
-        buttons.forEach(btn=>{
-            this.addEventListenerAll(btn, "click drag", e=>{
-                console.log(btn.className.baseVal.replace("btn-", ""));
+        buttons.forEach(btn => {
+            this.addEventListenerAll(btn, "click drag", e => {
+                let answer = btn.className.baseVal.replace("btn-", "");
+                this.execBtn(answer);
+                console.log(answer);
             });
 
-            this.addEventListenerAll(btn, "mouseover mouseup mousedown", e=>{
+            this.addEventListenerAll(btn, "mouseover mouseup mousedown", e => {
                 btn.style.cursor = "pointer";
             });
         });
+    }
+
+    execBtn(value) {
+        switch (value) {
+            case 'soma': this.addOperation('+'); break;
+            case 'subtracao': this.addOperation('-'); break;
+            case 'multiplicacao': this.addOperation('*'); break;
+            case 'divisao': this.addOperation('/'); break;
+            case 'porcento': this.addOperation('%'); break;
+            case 'igual': this.addOperation('='); break;
+            case 'ponto': value = '.'; break;
+            case 'ac': this.clearAll(); break;
+            case 'ce': this.clearEntry(); break;
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6': 
+            case '7': 
+            case '8': 
+            case '9':
+                this.addOperation(parseInt(value)); 
+                break;
+            default: this.setError();
+        }
     }
 
     setDisplayDateTime() {
@@ -41,11 +72,27 @@ class CalcController {
         });
     }
 
-    get displayDate () {
+    clearAll() {
+        this._operation = [];
+    }
+
+    clearEntry() {
+        this._operation.pop();
+    }
+
+    addOperation(value) {
+        this._operation.push(value);
+    }
+
+    setError() {
+        this.displayCalc = "Error";
+    }
+
+    get displayDate() {
         return this.currentDate.toLocaleDateString(this._locale);
     }
 
-    get displayTime () {
+    get displayTime() {
         return this.currentDate.toLocaleTimeString(this._locale);
     }
 
@@ -58,11 +105,11 @@ class CalcController {
     }
 
     //Pega a  data do sistema
-    get currentDate () {
+    get currentDate() {
         return new Date();
     }
 
-    set currentDate (value) {
+    set currentDate(value) {
         return this._currentDate = value;
     }
 }
