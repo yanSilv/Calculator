@@ -60,15 +60,29 @@ class CalcController {
         }
     }
 
-    setDisplayDateTime() {
-        this._dateEl.innerHTML = this.displayDate;
-        this._timeEl.innerHTML = this.displayTime;
-    }
-
     addEventListenerAll(element, events, fn) {
         events.split(' ').forEach(event => {
             element.addEventListener(event, fn, false);
         });
+    }
+
+    addOperation(value) {
+        console.log(isNaN(value));
+        if (isNaN(this.getLastOperation())){
+            console.log(value);
+            if(this.isOperator(value)) {
+                this.setLastOperation(value);
+            } else if(isNaN(value)) {
+                //Outra coisa
+            } else {
+                this.pushOperation(value);
+            }
+        } else if(isNaN(value)) {
+            this.pushOperation(value);
+        } else {
+            let newValue = this.getLastOperation().toString() + value.toString();
+            this.setLastOperation(parseInt(newValue));
+        }
     }
 
     clearAll() {
@@ -79,37 +93,40 @@ class CalcController {
         this._operation.pop();
     }
 
+    isOperator(value){
+        return (['+', '-', '*', '%', '/'].indexOf(value) > -1);
+    }
+
+    setDisplayDateTime() {
+        this._dateEl.innerHTML = this.displayDate;
+        this._timeEl.innerHTML = this.displayTime;
+    }
+
+    setError() {
+        this.displayCalc = "Error";
+    }
+
+    pushOperation(value){
+        this._operation.push(value);
+        if(this._operation.length > 3) {
+            this.calc();
+        }
+    }
+
+    calc() {
+        let last = this._operation.pop();
+        let result = eval(this._operation.join(""));
+        this._operation = [result, last];
+    }
+
+
+    //Get e Set
     setLastOperation(value) {
         this._operation[this._operation.length -1] = value;
     }
 
     getLastOperation(){
         return this._operation[this._operation.length -1];
-    }
-
-    isOperator(value){
-        return (['+', '-', '*', '%', '/'].indexOf(value) > -1);
-    }
-
-    addOperation(value) {
-        console.log(isNaN(value));
-        if (isNaN(this.getLastOperation()) || isNaN(value)){
-            console.log(value);
-            if(this.isOperator(value)) {
-                this._operation.push(value);
-            } else if(isNaN(value)) {
-                //Outra coisa
-            } else {
-                this._operation.push(value);
-            }
-        } else {
-            let newValue = this.getLastOperation().toString() + value.toString();
-            this.setLastOperation(parseInt(newValue));
-        }
-    }
-
-    setError() {
-        this.displayCalc = "Error";
     }
 
     get displayDate() {
