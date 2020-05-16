@@ -11,19 +11,33 @@ class CalcController {
     }
 
     initialize(){
-
+        this.setDisplayDateTime();
         setInterval(()=>{
-            this._dateEl.innerHTML = this.displayDate;
-            this._timeEl.innerHTML = this.displayTime;
+            this.setDisplayDateTime();    
         }, 1000);
     }
 
     initButtonsEvents() {
         let buttons = document.querySelectorAll("#buttons > g, #parts > g");
         buttons.forEach(btn=>{
-            btn.addEventListener('click', e=>{
+            this.addEventListenerAll(btn, "click drag", e=>{
                 console.log(btn.className.baseVal.replace("btn-", ""));
             });
+
+            this.addEventListenerAll(btn, "mouseover mouseup mousedown", e=>{
+                btn.style.cursor = "pointer";
+            });
+        });
+    }
+
+    setDisplayDateTime() {
+        this._dateEl.innerHTML = this.displayDate;
+        this._timeEl.innerHTML = this.displayTime;
+    }
+
+    addEventListenerAll(element, events, fn) {
+        events.split(' ').forEach(event => {
+            element.addEventListener(event, fn, false);
         });
     }
 
