@@ -25,7 +25,6 @@ class CalcController {
             this.addEventListenerAll(btn, "click drag", e => {
                 let answer = btn.className.baseVal.replace("btn-", "");
                 this.execBtn(answer);
-                console.log(answer);
             });
 
             this.addEventListenerAll(btn, "mouseover mouseup mousedown", e => {
@@ -80,8 +79,33 @@ class CalcController {
         this._operation.pop();
     }
 
+    setLastOperation(value) {
+        this._operation[this._operation.length -1] = value;
+    }
+
+    getLastOperation(){
+        return this._operation[this._operation.length -1];
+    }
+
+    isOperator(value){
+        return (['+', '-', '*', '%', '/'].indexOf(value) > -1);
+    }
+
     addOperation(value) {
-        this._operation.push(value);
+        console.log(isNaN(value));
+        if (isNaN(this.getLastOperation()) || isNaN(value)){
+            console.log(value);
+            if(this.isOperator(value)) {
+                this._operation.push(value);
+            } else if(isNaN(value)) {
+                //Outra coisa
+            } else {
+                this._operation.push(value);
+            }
+        } else {
+            let newValue = this.getLastOperation().toString() + value.toString();
+            this.setLastOperation(parseInt(newValue));
+        }
     }
 
     setError() {
