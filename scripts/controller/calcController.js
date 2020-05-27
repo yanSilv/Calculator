@@ -16,6 +16,7 @@ class CalcController {
         setInterval(() => {
             this.setDisplayDateTime();
         }, 1000);
+        this.setLastNumberToDisplay();
     }
 
     initButtonsEvents() {
@@ -88,14 +89,16 @@ class CalcController {
 
     clearAll() {
         this._operation = [];
+        this.setLastNumberToDisplay();
     }
 
     clearEntry() {
         this._operation.pop();
+        this.setLastNumberToDisplay();
     }
 
     isOperator(value){
-        return (['+', '-', '*', '%', '/'].indexOf(value) > -1);
+        return (['+', '-', '*', '%', '/', '='].indexOf(value) > -1);
     }
 
     setDisplayDateTime() {
@@ -116,7 +119,7 @@ class CalcController {
                 break;
             } 
         }
-
+        if (lastNumber == '') lastNumber = 0;
         this.displayCalc = lastNumber;
     }
 
@@ -129,8 +132,26 @@ class CalcController {
 
     calc() {
         let last = this._operation.pop();
-        let result = eval(this._operation.join(""));
+        let result = '';
+
+        if (last == '%') {
+            let value = this._operation[0];
+            let operation = this._operation[1];
+            let percent = this._operation[2];
+            if (operation == '+' || operation == '-') {
+                result = (value * (percent/100));
+                this._operation = [value, operation, result];
+            } else {
+                result = (percent/100);
+                this._operation = [value, operation, result];
+            }
+
+            
+        } 
+
+        result = eval(this._operation.join(""));
         this._operation = [result, last];
+
         this.setLastNumberToDisplay();
     }
 
