@@ -12,6 +12,7 @@ class CalcController {
         this._timeEl = document.querySelector("#hora");
         this._currentDate;
         this.initialize();
+        this.initKeyboard();
         this.initButtonsEvents();
     }
 
@@ -35,6 +36,41 @@ class CalcController {
             this.addEventListenerAll(btn, "mouseover mouseup mousedown", e => {
                 btn.style.cursor = "pointer";
             });
+        });
+    }
+
+    initKeyboard() {
+        document.addEventListener('keyup', e=>{
+            switch (e.key) {
+                case '+': 
+                case '-': 
+                case '*': 
+                case '/': 
+                case '%': 
+                    this.addOperation(e.key); break;
+                case 'Enter':
+                case '=': 
+                    this.calc(); break;
+                case '.':
+                case ',': 
+                    this.addDot(); break;
+                case 'Escape': 
+                    this.clearAll(); break;
+                case 'Backspace': 
+                    this.clearEntry(); break;
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6': 
+                case '7': 
+                case '8': 
+                case '9':
+                    this.addOperation(parseFloat(e.key)); 
+                    break;
+            }
         });
     }
 
