@@ -1,6 +1,8 @@
 class CalcController {
 
     constructor() {
+        this._audio = new Audio('click.mp3');
+        this._audioOnOff = false;
         this._firstTime = true;
         this._resultLast = 0;
         this._valueLast = 0;
@@ -39,6 +41,23 @@ class CalcController {
         }, 1000);
         this.setLastNumberToDisplay();
         this.pasteFromClipboard();
+
+        document.querySelectorAll('.btn-ac').forEach(btn=>{
+            btn.addEventListener('dblclick', e=>{
+                this.toggleAudio();
+            });
+        });
+    }
+
+    toggleAudio() {
+        this._audioOnOff = !this._audioOnOff;
+    } 
+    
+    playAdio(){
+        if(this._audioOnOff) {
+            this._audio.currentTime = 0;
+            this._audio.play();
+        }
     }
 
     initButtonsEvents() {
@@ -58,6 +77,7 @@ class CalcController {
 
     initKeyboard() {
         document.addEventListener('keyup', e=>{
+            this.playAdio();
             switch (e.key) {
                 case '+': 
                 case '-': 
@@ -95,6 +115,7 @@ class CalcController {
     }
 
     execBtn(value) {
+        this.playAdio();
         switch (value) {
             case 'soma': this.addOperation('+'); break;
             case 'subtracao': this.addOperation('-'); break;
