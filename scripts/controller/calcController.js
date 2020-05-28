@@ -210,7 +210,8 @@ class CalcController {
                 lastNumber = this._operation[i];
                 break;
             } 
-        }
+        } 
+
         if (lastNumber == '') lastNumber = 0;
         this.displayCalc = lastNumber;
     }
@@ -286,6 +287,11 @@ class CalcController {
     }
 
     set displayCalc(value) {
+        if (value.toString().length > 10){
+            this.setError();
+            return;
+        }
+
         this._displayCalcEl.innerHTML = value;
     }
 
