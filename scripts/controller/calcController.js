@@ -256,8 +256,13 @@ class CalcController {
             }
 
             
+        }
+        try{
+            result = eval(this._operation.join(""));
+        } catch(e) {
+            this.setError();
+            return;
         } 
-        result = eval(this._operation.join(""));
         this._operation = [result, last];
         this._resultLast = result;
         this._operationLast = last;
